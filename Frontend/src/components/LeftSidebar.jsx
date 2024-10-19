@@ -119,11 +119,30 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { USER_API_END_POINT } from '../utils/constant';
+import toast from 'react-hot-toast';
+import { getMyProfile, getOtherUsers, getUser } from '../redux/userSlice';
 
 function LeftSidebar() {
   const {user} = useSelector(store=>store.user)
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  async function logoutHandler(){
+    try {
+      const res = await axios.get(`${USER_API_END_POINT}/logout`)
+      toast.success(res.data.message)
+      dispatch(getUser(null))
+      dispatch(getOtherUsers(null))
+      dispatch(getMyProfile(null))
+      navigate('/login')
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message)
+      
+    }
+  }
 
   return (
     <div className='w-[20%]'>
@@ -153,12 +172,10 @@ function LeftSidebar() {
             <div className='flex items-center justify-center w-[30px] h-[40px]'><IoBookmark size={'24px'} /></div>
             <h1 className='font-bold text-lg ml-4'>BookMark</h1>
           </div>
-          <div className='flex items-center my-2 px-4 py-2 hover:bg-gray-200 hover:cursor-pointer rounded-full'>
+          <div onClick={logoutHandler} className='flex items-center my-2 px-4 py-2 hover:bg-gray-200 hover:cursor-pointer rounded-full'>
             <div className='flex items-center justify-center w-[30px] h-[40px]'><IoMdLogOut size={'24px'} /></div>
             <h1 className='font-bold text-lg ml-4'>Logout</h1>
           </div>
-
-          {/* Post Button */}
           <button className='px-4 py-2 border-none text-md bg-[#1e90ff] w-full rounded-full text-white font-bold hover:bg-[#1873cc]'>
             Post
           </button>

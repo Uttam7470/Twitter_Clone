@@ -2,7 +2,7 @@ import React from 'react'
 import LeftSidebar from './LeftSidebar'
 import RightSidebar from './RightSidebar'
 import '../index.css'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import useOtherUsers from './hooks/useOtherUsers'
@@ -14,6 +14,12 @@ function Home() {
   // Custom Hooks
 
   const {user,otherUsers} = useSelector(store=>  store.user)
+  const navigate = useNavigate();
+  useEffect(()=>{
+    if(!user){
+      navigate('/login')
+     }
+  },[])
  
   useOtherUsers(user?._id);
   useGetMyTweet(user?._id);
